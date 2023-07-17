@@ -1,0 +1,48 @@
+<link
+	rel="stylesheet"
+	href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<div
+	id="map"
+	style="height: 500px"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+	// Initializing the map
+	const map = L.map("map").setView([0, 0], 2);
+
+	L.tileLayer(
+		"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+		{
+			attribution:
+				'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+			maxZoom: 18,
+		}
+	).addTo(map);
+
+
+		L.geoJSON(<%- JSON.stringify(earthquakes) %>, {
+			pointToLayer: (feature, latlng) => {
+
+
+				return L.circleMarker(latlng, {
+					radius: 5,
+					fillColor: "red",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8,
+				});
+			},
+			onEachFeature: (feature, layer) => {
+				const properties =
+					feature.properties;
+				layer.bindPopup(`
+	             <strong>Magnitude:</strong> ${properties.magnitude}<br>
+	             <strong>Depth:</strong> ${properties.depth}<br>
+	             <strong>Location:</strong> ${properties.location}
+	           `);
+			},
+		}).addTo(map);
+		
+</script>
